@@ -1,3 +1,5 @@
+import { truncateAtSentence } from "@/utils/truncateAtSetence";
+
 function extractPrice(element: Element | null) {
   if (!element) return null;
 
@@ -6,9 +8,15 @@ function extractPrice(element: Element | null) {
   const cents =
     element.querySelector(".andes-money-amount__cents")?.textContent || "00";
 
+  const fullText = element.parentElement?.parentElement?.textContent ?? "";
+
+  const installmentMatch = fullText.match(/(\d+)\s*x/i);
+  const installments = installmentMatch ? installmentMatch[1] : null;
+
   return {
     raw: `${fraction.replace(".", "")}${cents}`,
     formatted: `R$ ${fraction.replace(".", "")},${cents}`,
+    installments,
   };
 }
 
@@ -42,22 +50,6 @@ export async function scrapeMercadoLivre() {
   const pixPrice = extractPrice(pixPriceElement);
   const productTitle = titleElement?.textContent?.trim();
   const productDescription = description?.textContent?.trim();
-
-  const truncateAtSentence = (text: string, maxWords: number) => {
-    if (!text) return "";
-
-    const words = text.split(/\s+/);
-    if (words.length <= maxWords) return text;
-
-    const truncated = words.slice(0, maxWords).join(" ");
-
-    const remainingText = text.substring(truncated.length);
-    const nextDotIndex = remainingText.indexOf(".");
-
-    if (nextDotIndex === -1) return truncated + "...";
-
-    return truncated + remainingText.substring(0, nextDotIndex + 1);
-  };
 
   const truncatedDescription = truncateAtSentence(productDescription ?? "", 50);
 
@@ -93,7 +85,7 @@ export async function scrapeMercadoLivre() {
   const formattedText = `
 ${productTitle}
 
-Por ${creditCardPrice?.formatted}${pixPrice ? ` (PIX: ${pixPrice.formatted})` : ""}🚨🚨
+Por ${creditCardPrice?.installments}x de ${creditCardPrice?.formatted}${pixPrice ? ` (PIX: ${pixPrice.formatted})` : ""}🚨🚨
 
 ${truncatedDescription || "Descrição do produto"}
 

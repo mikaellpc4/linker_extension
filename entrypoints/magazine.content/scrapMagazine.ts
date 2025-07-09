@@ -1,3 +1,5 @@
+import { truncateAtSentence } from "@/utils/truncateAtSetence";
+
 export async function scrapeMagazine() {
   const thumbnailElement = document.querySelector(
     'img[data-testid="image-selected-thumbnail"]',
@@ -22,22 +24,6 @@ export async function scrapeMagazine() {
     richContentElements[0]?.textContent?.trim();
 
   const cleanPixPrice = pixPrice?.replace(/^ou\s+/i, "");
-
-  const truncateAtSentence = (text: string, maxWords: number) => {
-    if (!text) return "";
-
-    const words = text.split(/\s+/);
-    if (words.length <= maxWords) return text;
-
-    const truncated = words.slice(0, maxWords).join(" ");
-
-    const remainingText = text.substring(truncated.length);
-    const nextDotIndex = remainingText.indexOf(".");
-
-    if (nextDotIndex === -1) return truncated + "...";
-
-    return truncated + remainingText.substring(0, nextDotIndex + 1);
-  };
 
   const truncatedDescription = truncateAtSentence(richContent ?? "", 50);
 
