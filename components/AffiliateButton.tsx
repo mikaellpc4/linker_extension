@@ -36,10 +36,10 @@ export const AffiliateButton = ({
     <>
       <button
         type="button"
-        className={`${buttonClassName} relative`}
+        className={`${buttonClassName} relative grid place-content-center`}
         onClick={handleClick}
       >
-        <span className="w-5 absolute left-4 top-1/2 -translate-y-1/2">
+        <span className="w-5 absolute inset-0 left-4">
           <svg
             fill="currentColor"
             stroke="currentColor"

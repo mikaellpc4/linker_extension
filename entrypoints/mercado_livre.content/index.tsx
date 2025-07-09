@@ -25,7 +25,6 @@ export default defineContentScript({
         'button[formaction="https://www.mercadolivre.com.br/gz/checkout/buy"] > span',
       );
 
-
       const buttonStyle = buyButton?.className;
 
       const buttonSpanStyle = buyButtonSpan?.className;
