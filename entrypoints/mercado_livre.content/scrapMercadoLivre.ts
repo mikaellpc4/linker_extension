@@ -1,4 +1,5 @@
 import { truncateAtSentence } from "@/utils/truncateAtSetence";
+import TurndownService from "turndown";
 
 function extractPrice(element: Element | null) {
   if (!element) return null;
@@ -49,9 +50,18 @@ export async function scrapeMercadoLivre() {
   const creditCardPrice = extractPrice(creditCardPriceElement);
   const pixPrice = extractPrice(pixPriceElement);
   const productTitle = titleElement?.textContent?.trim();
-  const productDescription = description?.textContent?.trim();
+  const productDescriptionHtml = description?.innerHTML;
 
-  const truncatedDescription = truncateAtSentence(productDescription ?? "", 50);
+  const turndownService = new TurndownService();
+
+  const cleanProductDescription = turndownService.turndown(
+    productDescriptionHtml ?? "",
+  );
+
+  const truncatedDescription = truncateAtSentence(
+    cleanProductDescription ?? "",
+    50,
+  );
 
   async function getAffiliateLink() {
     const generateLinkButton = document.querySelector(

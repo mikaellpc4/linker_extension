@@ -4,12 +4,19 @@ export function truncateAtSentence(text: string, maxWords: number) {
   const words = text.split(/\s+/);
   if (words.length <= maxWords) return text;
 
-  const truncated = words.slice(0, maxWords).join(" ");
+  const truncatedWords = words.slice(0, maxWords);
+  const truncated = truncatedWords.join(" ");
 
-  const remainingText = text.substring(truncated.length);
-  const nextDotIndex = remainingText.indexOf(".");
+  const indexOfTruncated = text.indexOf(
+    truncatedWords[truncatedWords.length - 1],
+  );
+  const afterTruncated = text.slice(
+    indexOfTruncated + truncatedWords[truncatedWords.length - 1].length,
+  );
+
+  const nextDotIndex = afterTruncated.indexOf(".");
 
   if (nextDotIndex === -1) return truncated + "...";
 
-  return truncated + remainingText.substring(0, nextDotIndex + 1);
+  return truncated + afterTruncated.slice(0, nextDotIndex + 1);
 }

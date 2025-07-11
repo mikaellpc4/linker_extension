@@ -26,13 +26,24 @@ export function ScrapeModal({
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const modalRef = useRef<HTMLDivElement>(null);
+  const dragStartedInside = useRef(false);
+
+  useEffect(() => {
+    console.log({ modalRef, dragStartedInside });
+  }, [modalRef, dragStartedInside]);
+
   if (!isOpen) return null;
 
   return createPortal(
     <div
       className="fixed inset-0 flex items-center justify-center bg-black/20 z-[999]"
+      onMouseDown={(e) => {
+        dragStartedInside.current =
+          modalRef.current?.contains(e.target as Node) ?? false;
+      }}
       onClick={(e) => {
-        if (e.target === e.currentTarget) {
+        if (e.target === e.currentTarget && !dragStartedInside.current) {
           close();
         }
       }}
